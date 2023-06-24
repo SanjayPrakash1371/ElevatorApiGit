@@ -24,3 +24,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+// Lavanya T made change 
+
+//pavi
