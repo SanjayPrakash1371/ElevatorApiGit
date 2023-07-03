@@ -26,22 +26,25 @@ namespace ElevatorUI
             // Thread mainThread = Thread.CurrentThread;
             //mainThread.Name = "Main Thread";
             //Console.WriteLine(mainThread.Name);
-
-            for (int i = 1; i <= 4; i++)
+            while(true)
             {
-                upwardDirection(i);
 
-                var t1 = Task.Delay(2000);
-                await t1;
+                for (int i = 1; i <= 4; i++)
+                {
+                    upwardDirection(i);
 
-            }
-            for (int i = 4; i >= 1; i--)
-            {
-                downwardDirection(i);
+                    var t1 = Task.Delay(2000);
+                    await t1;
 
-                var t1 = Task.Delay(2000);
-                await t1;
+                }
+                for (int i = 4; i >= 1; i--)
+                {
+                    downwardDirection(i);
 
+                    var t1 = Task.Delay(5000);
+                    await t1;
+
+                }
             }
 
 
