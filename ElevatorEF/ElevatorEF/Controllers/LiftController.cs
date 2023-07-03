@@ -7,7 +7,7 @@ namespace ElevatorEF.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LiftController : ControllerBase
+    public class LiftController : ControllerBase  
     {
         private readonly AllDbContext context;
         public LiftController(AllDbContext context)
