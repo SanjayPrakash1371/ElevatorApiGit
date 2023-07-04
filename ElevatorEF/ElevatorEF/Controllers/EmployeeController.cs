@@ -1,4 +1,5 @@
-﻿using ElevatorEF.Models;
+﻿using DataAccess.DbAccess;
+using ElevatorEF.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ namespace ElevatorEF.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly  AllDbContext context;
+        private readonly AllDbContext context;
+
         public EmployeeController(AllDbContext context) {
             this.context = context;
         
@@ -19,7 +21,13 @@ namespace ElevatorEF.Controllers
         public  async Task<ActionResult<IEnumerable<Employee>>> Get()
         {
 
-            return await context.Employees.ToListAsync();
+            var result= await context.Employees.ToListAsync();
+
+           
+
+            
+
+            return Ok(result);
 
         }
 

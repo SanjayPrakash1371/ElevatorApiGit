@@ -1,7 +1,9 @@
-﻿using ElevatorEF.Models;
+﻿using DataAccess.DbAccess;
+using ElevatorEF.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace ElevatorEF.Controllers
 {
@@ -20,7 +22,13 @@ namespace ElevatorEF.Controllers
         public async Task<ActionResult<IEnumerable<LiftLog>>> Get()
         {
 
-            return await context.LiftLogs.ToListAsync();
+            var result= await context.LiftLogs.ToListAsync();
+
+            result.ForEach(list=>list.employee=context.Employees.Find(list.empId));
+
+          //  return await context.LiftLogs.ForEachAsync(list=>list.employee=context.Employees.Find(keyValues: list.empId));
+
+            return Ok(result);
 
         }
 
@@ -28,7 +36,14 @@ namespace ElevatorEF.Controllers
         [Route("{id}")]
         public  async Task<ActionResult<LiftLog>> Get([FromRoute] int id)
         {
-            return await context.LiftLogs.FindAsync(id);
+            LiftLog? result= await context.LiftLogs.FindAsync(id);
+
+            Employee? employee = await context.Employees.FirstOrDefaultAsync(x => x.Id == result.empId);
+
+            result.employee = employee;
+
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -43,6 +58,9 @@ namespace ElevatorEF.Controllers
             log.start=newlog.start;
             log.end=newlog.end;
             log.dateTime = DateTime.Now;
+
+            var emp=await context.Employees.FirstOrDefaultAsync(x=>x.Id==newlog.empId);
+            log.employee = emp;
 
            await context.LiftLogs.AddAsync(log);
             await context.SaveChangesAsync();
@@ -66,6 +84,16 @@ namespace ElevatorEF.Controllers
             await context.SaveChangesAsync();
 
             return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<ActionResult<LiftLog>> updateLog([FromRoute]int id, NewLog newlog)
+        {
+            context.Update(newlog);
+            await context.SaveChangesAsync();
+
+            return Ok(newlog);
         }
     }
 }

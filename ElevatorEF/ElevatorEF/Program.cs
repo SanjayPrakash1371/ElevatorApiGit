@@ -1,3 +1,4 @@
+using DataAccess.DbAccess;
 using ElevatorEF.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AllDbContext>(option=>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DbCs")));
 
+        builder.Services.AddCors(option =>
+
+        option.AddDefaultPolicy(policy =>
+        {
+            policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+
+        }
+        ));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +35,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 

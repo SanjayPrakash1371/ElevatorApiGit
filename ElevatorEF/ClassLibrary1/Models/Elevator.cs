@@ -9,5 +9,8 @@
         public int weight { get; set; }
 
         public DateTime dateTime { get; set; }
+
+        // int count
+        // liftlog .start==floorno
     }
 }

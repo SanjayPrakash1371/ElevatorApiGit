@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ElevatorEF.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ElevatorEF.Models
+namespace ElevatorEF.DbContext
 {
     public class AllDbContext:DbContext
     {
-        public AllDbContext(DbContextOptions options):base(options) 
+        public AllDbContext(DbContextOptions options) : base(options)
         {
             
         }
