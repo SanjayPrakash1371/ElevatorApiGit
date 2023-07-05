@@ -18,19 +18,19 @@ namespace ElevatorEF.Controllers
 
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Elevator>>> Get()
+        public async Task<ActionResult<IEnumerable<ElevatorLogAccess>>> Get()
         {
 
-            return await context.Elevators.ToListAsync();
+            return await context.ElevatorLogs.ToListAsync();
 
         }
 
         [HttpGet]
         [Route("{id}")]
 
-        public async Task<ActionResult<Elevator>> Get([FromRoute] int id)
+        public async Task<ActionResult<ElevatorLogAccess>> Get([FromRoute] int id)
         {
-            var result = await context.Elevators.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await context.ElevatorLogs.FirstOrDefaultAsync(x => x.Id == id);
 
             if (result == null)
             {
@@ -48,11 +48,13 @@ namespace ElevatorEF.Controllers
             {
                 return BadRequest();
             }
-            Elevator e = new Elevator();
+            ElevatorLogAccess e = new ElevatorLogAccess();
             e.weight=addelevator.weight;
             e.floorno=addelevator.floorno;
             e.dateTime = DateTime.Now;
-           await context.Elevators.AddAsync(e);
+            
+
+           await context.ElevatorLogs.AddAsync(e);
             await context.SaveChangesAsync();
 
             return Ok(e);
@@ -62,7 +64,7 @@ namespace ElevatorEF.Controllers
         [Route("{id}")]
         public async Task<IActionResult> delete([FromRoute] int id)
         {
-            var eleSearch = context.Elevators.FirstOrDefault(x => x.Id.Equals(id));
+            var eleSearch = context.ElevatorLogs.FirstOrDefault(x => x.Id.Equals(id));
 
             if (eleSearch != null)
             {

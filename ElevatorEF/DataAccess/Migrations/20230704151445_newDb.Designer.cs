@@ -4,6 +4,7 @@ using DataAccess.DbAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AllDbContext))]
-    partial class AllDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230704151445_newDb")]
+    partial class newDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,10 +39,15 @@ namespace DataAccess.Migrations
                     b.Property<int>("floorno")
                         .HasColumnType("int");
 
+                    b.Property<int>("logid")
+                        .HasColumnType("int");
+
                     b.Property<int>("weight")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("logid");
 
                     b.ToTable("ElevatorLogs");
                 });
@@ -99,7 +107,7 @@ namespace DataAccess.Migrations
                     b.ToTable("LiftLogs");
                 });
 
-            modelBuilder.Entity("Models.Models.ElevatorLogDI", b =>
+            modelBuilder.Entity("Models.Models.ElevatorLogging", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,22 +115,34 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ElevatorLogAccessId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("dateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("floorno")
                         .HasColumnType("int");
 
-                    b.Property<int?>("liftlogid")
+                    b.Property<int>("logid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("weight")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ElevatorLogAccessId");
-
-                    b.HasIndex("liftlogid");
+                    b.HasIndex("logid");
 
                     b.ToTable("elevatorLoggings");
+                });
+
+            modelBuilder.Entity("ElevatorEF.Models.ElevatorLogAccess", b =>
+                {
+                    b.HasOne("ElevatorEF.Models.LiftLog", "log")
+                        .WithMany()
+                        .HasForeignKey("logid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("log");
                 });
 
             modelBuilder.Entity("ElevatorEF.Models.LiftLog", b =>
@@ -134,19 +154,15 @@ namespace DataAccess.Migrations
                     b.Navigation("employee");
                 });
 
-            modelBuilder.Entity("Models.Models.ElevatorLogDI", b =>
+            modelBuilder.Entity("Models.Models.ElevatorLogging", b =>
                 {
-                    b.HasOne("ElevatorEF.Models.ElevatorLogAccess", "ElevatorLogAccess")
+                    b.HasOne("ElevatorEF.Models.LiftLog", "log")
                         .WithMany()
-                        .HasForeignKey("ElevatorLogAccessId");
+                        .HasForeignKey("logid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("ElevatorEF.Models.LiftLog", "liftlog")
-                        .WithMany()
-                        .HasForeignKey("liftlogid");
-
-                    b.Navigation("ElevatorLogAccess");
-
-                    b.Navigation("liftlog");
+                    b.Navigation("log");
                 });
 #pragma warning restore 612, 618
         }

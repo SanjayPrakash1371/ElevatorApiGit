@@ -1,5 +1,6 @@
 ﻿using ElevatorEF.Models;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,10 @@ namespace DataAccess.DbAccess
         }
 
        public  DbSet<Employee> Employees { get; set; }
-       public  DbSet<Elevator> Elevators { get; set; }
+       public  DbSet<ElevatorLogAccess> ElevatorLogs { get; set; }
 
       public  DbSet<LiftLog> LiftLogs { get; set; }
+
+        public DbSet<ElevatorLogDI> elevatorLoggings { get; set; }
     }
 }
