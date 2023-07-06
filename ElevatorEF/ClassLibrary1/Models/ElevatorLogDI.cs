@@ -13,6 +13,12 @@ namespace Models.Models
 
         public int floorno { get; set; }
 
+        
+
+        public int? elogId { get; set; }
+
+        public int? logLiftId { get; set; }
+
         public LiftLog? liftlog { get; set; }
 
         public ElevatorLogAccess? ElevatorLogAccess { get; set; }

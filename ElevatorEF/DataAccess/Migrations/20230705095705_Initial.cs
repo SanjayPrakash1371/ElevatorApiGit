@@ -12,7 +12,7 @@ namespace DataAccess.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Elevators",
+                name: "ElevatorLogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -23,7 +23,7 @@ namespace DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Elevators", x => x.Id);
+                    table.PrimaryKey("PK_ElevatorLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,6 +64,43 @@ namespace DataAccess.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "elevatorLoggings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    floorno = table.Column<int>(type: "int", nullable: false),
+                    elogId = table.Column<int>(type: "int", nullable: true),
+                    logLiftId = table.Column<int>(type: "int", nullable: true),
+                    liftlogid = table.Column<int>(type: "int", nullable: true),
+                    ElevatorLogAccessId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_elevatorLoggings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_elevatorLoggings_ElevatorLogs_ElevatorLogAccessId",
+                        column: x => x.ElevatorLogAccessId,
+                        principalTable: "ElevatorLogs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_elevatorLoggings_LiftLogs_liftlogid",
+                        column: x => x.liftlogid,
+                        principalTable: "LiftLogs",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_elevatorLoggings_ElevatorLogAccessId",
+                table: "elevatorLoggings",
+                column: "ElevatorLogAccessId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_elevatorLoggings_liftlogid",
+                table: "elevatorLoggings",
+                column: "liftlogid");
+
             migrationBuilder.CreateIndex(
                 name: "IX_LiftLogs_employeeId",
                 table: "LiftLogs",
@@ -74,7 +111,10 @@ namespace DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Elevators");
+                name: "elevatorLoggings");
+
+            migrationBuilder.DropTable(
+                name: "ElevatorLogs");
 
             migrationBuilder.DropTable(
                 name: "LiftLogs");

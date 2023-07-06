@@ -37,6 +37,7 @@ namespace ElevatorEF.Controllers
         public  async Task<ActionResult<Employee>> Get([FromRoute] int id)
         {
             var result= await context.Employees.FirstOrDefaultAsync(x=>x.Id==id);
+            result.Name = "😀😀";
 
             if(result==null)
             {
@@ -47,13 +48,17 @@ namespace ElevatorEF.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult<Employee>> addEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> addEmployee(NewEmployee newEmployee)
         {
-            if(employee==null)
+            if(newEmployee==null)
             {
 
                 return BadRequest();
             }
+            Employee employee = new Employee();
+            employee.weight = newEmployee.weight;   
+            employee.height = newEmployee.height;
+            employee.officefloor = newEmployee.officefloor;
 
             await context.Employees.AddAsync(employee);
 
@@ -89,7 +94,7 @@ namespace ElevatorEF.Controllers
         [Route("{id}")]
         public async Task<IActionResult> delete([FromRoute] int id)
         {
-            var empSearch = context.Employees.FirstOrDefault(x => x.Id.Equals(id));
+            var empSearch = await context.Employees.FirstOrDefaultAsync(x => x.Id == id);
 
             if (empSearch != null)
             {

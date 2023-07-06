@@ -110,10 +110,16 @@ namespace DataAccess.Migrations
                     b.Property<int?>("ElevatorLogAccessId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("elogId")
+                        .HasColumnType("int");
+
                     b.Property<int>("floorno")
                         .HasColumnType("int");
 
                     b.Property<int?>("liftlogid")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("logLiftId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

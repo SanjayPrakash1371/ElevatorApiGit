@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AllDbContext))]
-    [Migration("20230704151221_newTable")]
-    partial class newTable
+    [Migration("20230705095705_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,15 +39,10 @@ namespace DataAccess.Migrations
                     b.Property<int>("floorno")
                         .HasColumnType("int");
 
-                    b.Property<int>("logid")
-                        .HasColumnType("int");
-
                     b.Property<int>("weight")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("logid");
 
                     b.ToTable("ElevatorLogs");
                 });
@@ -107,7 +102,7 @@ namespace DataAccess.Migrations
                     b.ToTable("LiftLogs");
                 });
 
-            modelBuilder.Entity("Models.Models.ElevatorLogging", b =>
+            modelBuilder.Entity("Models.Models.ElevatorLogDI", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,34 +110,28 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("dateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("ElevatorLogAccessId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("elogId")
+                        .HasColumnType("int");
 
                     b.Property<int>("floorno")
                         .HasColumnType("int");
 
-                    b.Property<int>("logid")
+                    b.Property<int?>("liftlogid")
                         .HasColumnType("int");
 
-                    b.Property<int>("weight")
+                    b.Property<int?>("logLiftId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("logid");
+                    b.HasIndex("ElevatorLogAccessId");
+
+                    b.HasIndex("liftlogid");
 
                     b.ToTable("elevatorLoggings");
-                });
-
-            modelBuilder.Entity("ElevatorEF.Models.ElevatorLogAccess", b =>
-                {
-                    b.HasOne("ElevatorEF.Models.LiftLog", "log")
-                        .WithMany()
-                        .HasForeignKey("logid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("log");
                 });
 
             modelBuilder.Entity("ElevatorEF.Models.LiftLog", b =>
@@ -154,15 +143,19 @@ namespace DataAccess.Migrations
                     b.Navigation("employee");
                 });
 
-            modelBuilder.Entity("Models.Models.ElevatorLogging", b =>
+            modelBuilder.Entity("Models.Models.ElevatorLogDI", b =>
                 {
-                    b.HasOne("ElevatorEF.Models.LiftLog", "log")
+                    b.HasOne("ElevatorEF.Models.ElevatorLogAccess", "ElevatorLogAccess")
                         .WithMany()
-                        .HasForeignKey("logid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ElevatorLogAccessId");
 
-                    b.Navigation("log");
+                    b.HasOne("ElevatorEF.Models.LiftLog", "liftlog")
+                        .WithMany()
+                        .HasForeignKey("liftlogid");
+
+                    b.Navigation("ElevatorLogAccess");
+
+                    b.Navigation("liftlog");
                 });
 #pragma warning restore 612, 618
         }

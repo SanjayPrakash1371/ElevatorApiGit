@@ -73,7 +73,7 @@ namespace ElevatorEF.Controllers
         [Route("{id}")]
         public async Task<IActionResult> delete([FromRoute] int id)
         {
-            var result=context.LiftLogs.FirstOrDefaultAsync(l=>l.id==id);   
+            var result=await context.LiftLogs.FirstOrDefaultAsync(l=>l.id==id);   
 
             if(result==null)
             {
