@@ -14,5 +14,9 @@ namespace Sample.Models
         public string Name { get; set; }
 
         public string Designation { get; set; }
+
+      //  public UserPassword UserPassword { get; set; }
+
+       // public ICollection<Roles> roles { get; set;}
     }
 }
