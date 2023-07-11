@@ -23,5 +23,29 @@ namespace Sample.Controllers
 
             return Ok(employee);
         }
+
+        [HttpPut]
+        public async Task<ActionResult<Employee>> updateEmployee([FromRoute] string empId , Employee employee)
+        {
+
+            if(EmployeeAvailable(empId))
+            {
+                 dataAccess.Employees.Update(employee);
+
+                await dataAccess.SaveChangesAsync();
+
+                return Ok(employee);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+        }
+
+        private bool EmployeeAvailable(string empId)
+        {
+            return (dataAccess.Employees?.Any(x => x.empId.Equals(empId))).GetValueOrDefault();
+        }
     }
 }

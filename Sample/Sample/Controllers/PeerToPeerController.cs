@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Sample.DbConnect;
 using Sample.Models;
@@ -68,6 +69,8 @@ namespace Sample.Controllers
 
             Employee employee = await dataAccess.Employees.FirstOrDefaultAsync(x=>x.empId.Equals(p2.empId));
             result.employee = employee;
+
+
             p2.Results = result;
             p2.employee = employee;
             
@@ -88,7 +91,38 @@ namespace Sample.Controllers
         [Route("{empId}")]
         public async Task<ActionResult<PeerToPeer>> updateUser([FromRoute] string empId,NewPeerToPeer p)
         {
-            if (EmployeeAvailable(empId))
+
+            PeerToPeer pNew = dataAccess.PeerToPeer.FirstOrDefault(x=>x.empId.Equals(empId));
+
+            pNew.nominatorId= p.nominatorId;
+            pNew.empId = p.empId;
+            pNew.citation = p.citation;
+            pNew.awardCategory = p.awardCategory;
+
+            //Add Employee
+            Employee employee=dataAccess.Employees.FirstOrDefault(x=>x.empId.Equals(pNew.empId));
+            pNew.employee = employee;
+
+            PeerToPeerResults results=  dataAccess.PeerToPeerResults.FirstOrDefault(x => x.nomainaterId.Equals(pNew.nominatorId));
+
+            results.nomainatedEmpId=pNew.empId;
+            results.citation=pNew.citation;
+
+            results.employee=employee;
+
+            //Add Peer Results;
+
+            pNew.Results = results;
+
+
+             dataAccess.PeerToPeer.Update(pNew);
+
+            await dataAccess.SaveChangesAsync();
+
+            return Ok(pNew);
+
+
+            /*if (EmployeeAvailable(empId))
             {
                 PeerToPeer p2 = new PeerToPeer();
                 p2.nominatorId = p.nominatorId;
@@ -102,24 +136,29 @@ namespace Sample.Controllers
                 p2.citation = p.citation;
 
                 //  p2.employee = dataAccess.Employees.Find(p.empId);
-                PeerToPeerResults? result = dataAccess.PeerToPeerResults.FirstOrDefault(x => x.nomainaterId == p2.nominatorId); ;
+                PeerToPeerResults? result = dataAccess.PeerToPeerResults.FirstOrDefault(x => x.nomainaterId == p2.nominatorId);
                 if (result != null)
                 {
                     result.nomainatedEmpId = p.empId;
                     result.nomainaterId = p.nominatorId;
                     result.citation = p.citation;
 
-                    p2.Results = result;
 
-                    dataAccess.Update(p2);
-                    
+
+
+
                 }
+              
+
+
+                dataAccess.Update(p2);
+                await dataAccess.SaveChangesAsync();
                 return Ok(p2);
             }
             else
             {
                 return BadRequest();
-            }
+            }*/
         }
         private bool EmployeeAvailable(string empId)
         {
